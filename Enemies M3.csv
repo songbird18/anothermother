@@ -1,4 +1,4 @@
-Enemy Name,Level,Attack,Defense,Speed,IQ,HP,PP,Exp,Money
+Enemy Name,Level,Offense,Defense,Speed,IQ,HP,PP,Exp,Money
 Prologue,,,,,,,,,
 Mole Cricket,5,10,3,1,2,45,0,2,0
 Chapter 1,,,,,,,,,
