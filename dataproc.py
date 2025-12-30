@@ -31,9 +31,15 @@ def importAsDf(filepath):
 #scale each game to a range of [0,1]
 #so relative values are preserved when combining
 def scaleSet(df):
-    arr = []
-    for i in df.shape[1]: 
-        if df[0][i] 
+    dfp = df.copy()
+    dfp.drop(columns='Enemy Name', inplace=True)
+    scaler = MinMaxScaler()
+    scaler.fit(dfp)
+    s = scaler.transform(dfp)
+    dfs = pd.DataFrame(s, columns=dfp.columns.tolist())
+    dfs.insert(loc=0, column='Enemy Name', value=df['Enemy Name'].values)
+    return dfs
+            
 
 #fill holes in data with standard fill/interpolation
 #while this is technically successful, it is currently
@@ -47,6 +53,7 @@ def fillerUp(df):
     return dfout
 
 #fill holes in data with linear regression
+#TODO: stop it. get some help
 def fillerUpRegression(df):
     return df
     
@@ -60,33 +67,15 @@ m1 = importAsDf(m1d)
 eb = importAsDf(ebd)
 m3 = importAsDf(m3d)
 
-#create a combination dataframe to regularize values
-all = pd.concat([m1,eb,m3], ignore_index=True, keys=["m1","eb","m3"])
+#regularize values for each game
+m1s = scaleSet(m1)
+ebs = scaleSet(eb)
+m3s = scaleSet(m3)
 
+#create a combination dataframe
+all = pd.concat([m1s,ebs,m3s], ignore_index=True, keys=["m1","eb","m3"])
 
-
-#all=all.sort_values(by="HP")
 all_filled = fillerUp(all)
 print(all_filled)
-print(all_filled.isna().any())
 
 
-#playground idk
-
-#all=all.sort_values(by="HP")
-#print(all)
-#all=all[all['Enemy Name']!='Pig King Statue']
-#plt.plot(range(0,len(all)),all['HP'])
-#m1 = m1.sort_values(by="HP")
-#eb = eb.sort_values(by="HP")
-#m3 = m3.sort_values(by="HP")
-
-#m3 = m3[m3['Enemy Name']!='Pig King Statue']
-#xax = range(0,max(len(eb),len(m1),len(m3)))
-
-#plt.plot(range(0,len(eb)),eb['HP'],range(0,len(m1)),m1['HP'],range(0,len(m3)),m3['HP'])
-#plt.legend(["EB","M1","M3"])
-#plt.xlabel("Defense")
-#plt.ylabel("HP")
-#plt.xticks(eb['Enemy Name'], eb['Enemy Name'], rotation='vertical', fontsize=5)
-plt.show()
