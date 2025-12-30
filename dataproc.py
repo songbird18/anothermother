@@ -25,7 +25,6 @@ Code By Caves/CC -- thanks for checking it out! <3
 def importAsDf(filepath):
     df = pd.read_csv(filepath)
     df = df.dropna()
-    df.head()
     return df
 
 #scale each game to a range of [0,1]
