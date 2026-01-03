@@ -1,7 +1,7 @@
 import pandas as pd
 import os
 import matplotlib.pyplot as plt
-from sklearn.preprocessing import MinMaxScaler
+from sklearn.preprocessing import MinMaxScaler, LinearRegression
 
 """
 Data Processing - Another Mother
@@ -52,9 +52,31 @@ def fillerUp(df):
     return dfout
 
 #fill holes in data with linear regression
-#TODO: stop it. get some help
+#takes a dataframe, makes a list of features that need
+#to be imputed, and then handles the missing data
+#one feature at a time
+#TODO: too tired rn to figure out how to manipulate holes
+#to get them to only reflect rows with nan vals in one
+#col without containing other cols with nans
 def fillerUpRegression(df):
-    return df
+    targets = df.columns[df.isnull().any()]
+    train = df
+    holes = df
+    for t in targets:
+        train = train[train[t].notnull()]
+        holes = holes[holes[t].isnull()]
+        train_f = train.dropna(axis=1)
+
+        
+    #restructure this/finish writing it after fixing the loop girl
+    #you gotta remember to do that 
+    Xt = [train['HP'], train['Offense'], train['Defense']]
+    out = []
+    for t in targets:
+        yt = train[t]
+        lrm = LinearRegression().fit(Xt, yt)
+        
+        
     
 
 #create pandas dataframes for the 3 enemy datasets
@@ -72,7 +94,7 @@ ebs = scaleSet(eb)
 m3s = scaleSet(m3)
 
 #create a combination dataframe
-all = pd.concat([m1s,ebs,m3s], ignore_index=True, keys=["m1","eb","m3"])
+all = pd.concat([m1s,ebs,m3s], ignore_index=True, keys=['m1','eb','m3'])
 
 all_filled = fillerUp(all)
 print(all_filled)
